@@ -1,0 +1,2 @@
+2026-02-27 00:16:25,908 - INFO - Model: classical_svm | num_classes=102
+2026-02-27 00:16:25,908 - INFO - Run dir: runs/baseline_classical/20260227_001625

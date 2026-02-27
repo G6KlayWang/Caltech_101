@@ -1,0 +1,25 @@
+project:
+  runs_root: runs
+  splits_dir: data/splits
+  processed_dir: data/processed
+data:
+  train_csv: data/splits/train.csv
+  val_csv: data/splits/val.csv
+  test_csv: data/splits/test.csv
+  num_classes: 102
+  num_workers: 4
+seed: 42
+model:
+  name: classical_svm
+features:
+  hog_size: 128
+  orientations: 9
+  pixels_per_cell: 8
+  cells_per_block: 2
+training:
+  c_grid:
+  - 0.01
+  - 0.1
+  - 1.0
+  - 10.0
+  max_iter: 5000
