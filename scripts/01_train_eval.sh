@@ -10,6 +10,7 @@ AUG="1"
 OPTIMIZER="adam"
 EXP_NAME="default_exp"
 SEED="42"
+SVM_USE_GPU="1"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -19,6 +20,7 @@ while [[ $# -gt 0 ]]; do
     --optimizer) OPTIMIZER="$2"; shift 2 ;;
     --exp_name) EXP_NAME="$2"; shift 2 ;;
     --seed) SEED="$2"; shift 2 ;;
+    --svm_use_gpu) SVM_USE_GPU="$2"; shift 2 ;;
     *)
       echo "Unknown argument: $1"
       exit 1
@@ -26,7 +28,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ "${MODEL}" == "classical_svm" || "${MODEL}" == "classical_lgbm" ]]; then
+if [[ "${MODEL}" == "classical_svm" ]]; then
+  python -m src.train.train_classical \
+    --model "${MODEL}" \
+    --exp_name "${EXP_NAME}" \
+    --seed "${SEED}" \
+    --svm_use_gpu "${SVM_USE_GPU}"
+elif [[ "${MODEL}" == "classical_lgbm" ]]; then
   python -m src.train.train_classical \
     --model "${MODEL}" \
     --exp_name "${EXP_NAME}" \

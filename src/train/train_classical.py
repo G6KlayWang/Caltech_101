@@ -22,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", type=str, choices=["classical_svm", "classical_lgbm"], required=True)
     parser.add_argument("--exp_name", type=str, default="classical_exp")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--svm_use_gpu", type=int, choices=[0, 1], default=None)
     parser.add_argument("--base_config", type=str, default="configs/base.yaml")
     parser.add_argument("--model_config", type=str, default=None)
     return parser.parse_args()
@@ -112,6 +113,9 @@ def main() -> None:
         from src.models.classical_svm import train_svm_with_val
 
         training_cfg = cfg["training"]
+        use_gpu = bool(training_cfg.get("use_gpu", True))
+        if args.svm_use_gpu is not None:
+            use_gpu = bool(args.svm_use_gpu)
         model, tune_info = train_svm_with_val(
             X_train=X_train_hog,
             y_train=y_train,
@@ -120,6 +124,7 @@ def main() -> None:
             c_grid=list(training_cfg["c_grid"]),
             max_iter=int(training_cfg["max_iter"]),
             seed=args.seed,
+            use_gpu=use_gpu,
         )
         X_test = X_test_hog
     else:
