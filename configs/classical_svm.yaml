@@ -1,0 +1,12 @@
+model:
+  name: classical_svm
+
+features:
+  hog_size: 128
+  orientations: 9
+  pixels_per_cell: 8
+  cells_per_block: 2
+
+training:
+  c_grid: [0.01, 0.1, 1.0, 10.0]
+  max_iter: 5000

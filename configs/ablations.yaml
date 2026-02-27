@@ -1,0 +1,6 @@
+models:
+  - resnet50
+  - efficientnet
+  - vit
+
+optimizer_ablation_model: resnet50

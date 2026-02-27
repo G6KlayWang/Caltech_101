@@ -1,0 +1,16 @@
+model:
+  name: resnet50
+  pretrained: true
+
+training:
+  epochs: 12
+  freeze_epochs: 2
+  batch_size: 32
+  lr: 0.0003
+  unfreeze_lr: 0.0001
+  weight_decay: 0.0001
+  optimizer: adam
+
+data:
+  img_size: 128
+  aug: 1
