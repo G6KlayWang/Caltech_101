@@ -12,5 +12,5 @@ training:
   optimizer: adam
 
 data:
-  img_size: 128
+  img_size: 224
   aug: 1

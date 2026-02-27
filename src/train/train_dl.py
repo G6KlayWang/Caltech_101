@@ -21,7 +21,7 @@ from src.utils.seed import set_seed
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train and evaluate transfer learning models on Caltech-101.")
     parser.add_argument("--model", type=str, choices=["resnet50", "efficientnet", "vit"], required=True)
-    parser.add_argument("--img_size", type=int, default=128, choices=[64, 128])
+    parser.add_argument("--img_size", type=int, default=128, choices=[64, 128, 224])
     parser.add_argument("--aug", type=int, default=1, choices=[0, 1])
     parser.add_argument("--optimizer", type=str, default="adam", choices=["adam", "sgd"])
     parser.add_argument("--exp_name", type=str, default="dl_exp")
@@ -130,6 +130,12 @@ def main() -> None:
 
     set_seed(args.seed)
 
+    # torchvision vit_b_16 expects 224x224 inputs.
+    vit_img_size_forced = False
+    if args.model == "vit" and int(args.img_size) != 224:
+        args.img_size = 224
+        vit_img_size_forced = True
+
     cfg = _load_configs(args.base_config, args.model, model_config_override=args.model_config)
     cfg["seed"] = args.seed
     cfg["model"]["name"] = args.model
@@ -153,6 +159,8 @@ def main() -> None:
     logger = get_logger("train_dl", run_dir / "logs.txt")
     save_yaml(cfg, run_dir / "config.yaml")
 
+    if vit_img_size_forced:
+        logger.warning("ViT requires img_size=224. Overriding requested size to 224.")
     logger.info("Model=%s | img_size=%d | aug=%d | optimizer=%s", args.model, args.img_size, args.aug, args.optimizer)
     logger.info("Classes=%d | Run dir=%s", num_classes, run_dir)
 
