@@ -1,0 +1,17 @@
+{
+  "accuracy": 0.48615160349854225,
+  "top5_accuracy": 0.6217201166180758,
+  "precision_macro": 0.35138528018569587,
+  "recall_macro": 0.26362515172727335,
+  "f1_macro": 0.28402494326393135,
+  "precision_weighted": 0.4682360080103431,
+  "recall_weighted": 0.48615160349854225,
+  "f1_weighted": 0.4569179460970136,
+  "model": "classical_svm",
+  "seed": 42,
+  "num_classes": 102,
+  "tuning": {
+    "best_c": 0.1,
+    "val_macro_f1": 0.26955578442861866
+  }
+}
