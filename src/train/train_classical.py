@@ -23,6 +23,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--exp_name", type=str, default="classical_exp")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--svm_use_gpu", type=int, choices=[0, 1], default=None)
+    parser.add_argument("--lgbm_use_gpu", type=int, choices=[0, 1], default=None)
     parser.add_argument("--base_config", type=str, default="configs/base.yaml")
     parser.add_argument("--model_config", type=str, default=None)
     return parser.parse_args()
@@ -143,6 +144,9 @@ def main() -> None:
         X_test = np.concatenate([X_test_hog, X_test_eng], axis=1)
 
         training_cfg = cfg["training"]
+        use_gpu = bool(training_cfg.get("use_gpu", False))
+        if args.lgbm_use_gpu is not None:
+            use_gpu = bool(args.lgbm_use_gpu)
         model, tune_info = train_lgbm_with_val(
             X_train=X_train,
             y_train=y_train,
@@ -153,6 +157,7 @@ def main() -> None:
             subsample=float(training_cfg["subsample"]),
             colsample_bytree=float(training_cfg["colsample_bytree"]),
             seed=args.seed,
+            use_gpu=use_gpu,
         )
 
     y_pred = model.predict(X_test)

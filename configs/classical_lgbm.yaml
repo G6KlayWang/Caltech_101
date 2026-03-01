@@ -8,9 +8,10 @@ features:
   cells_per_block: 2
 
 training:
+  use_gpu: false
   param_grid:
-    num_leaves: [31, 63]
-    learning_rate: [0.05, 0.1]
-    n_estimators: [200, 400]
-  subsample: 0.9
-  colsample_bytree: 0.9
+    num_leaves: [31]
+    learning_rate: [0.1]
+    n_estimators: [100]
+  subsample: 0.8
+  colsample_bytree: 0.8
