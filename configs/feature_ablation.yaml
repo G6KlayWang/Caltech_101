@@ -1,0 +1,18 @@
+ablation_name: A4_hog_vs_cnn
+exp_root: ablations/A4_hog_vs_cnn
+
+# HOG-based classical baselines
+hog_models:
+  - classical_svm
+  - classical_lgbm
+
+# CNN family (deep transfer-learning models)
+cnn_models:
+  - resnet50
+  - efficientnet
+
+# Shared run settings for CNN models
+img_size: 128
+aug: 1
+optimizer: adam
+

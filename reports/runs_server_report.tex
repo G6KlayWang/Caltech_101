@@ -15,7 +15,7 @@
 \maketitle
 
 \begin{abstract}
-This report summarizes training and evaluation results saved in \texttt{runs\_server} for Caltech-101 classification over 102 classes (including \texttt{BACKGROUND\_Google}). We compare a classical baseline (HOG + Linear SVM) against transfer-learning models (ResNet50, EfficientNet-B0, ViT-B/16), then analyze ablations on image size, augmentation, and optimizer. On the main test runs, ViT-B/16 achieves the best Top-1 accuracy (0.9461) and Macro-F1 (0.9272), followed by ResNet50 (0.9402, 0.9183) and EfficientNet-B0 (0.9213, 0.8955). The classical SVM baseline remains much lower (Top-1 0.5036), but provides a lightweight reference point. Ablations show strong dependence on image resolution for CNNs, limited gains from the tested augmentation setup, and a large optimizer sensitivity for ResNet50 (Adam $\gg$ SGD in this setup).
+This report summarizes training and evaluation results for Caltech-101 classification over 102 classes (including \texttt{BACKGROUND\_Google}). We compare two classical baselines (HOG + Linear SVM, HOG + Engineered Features + LightGBM) against transfer-learning models (ResNet50, EfficientNet-B0, ViT-B/16), then analyze ablations on image size, augmentation, and optimizer. On the main test runs, ViT-B/16 achieves the best Top-1 accuracy (0.9461) and Macro-F1 (0.9272), followed by ResNet50 (0.9402, 0.9183) and EfficientNet-B0 (0.9213, 0.8955). Among classical methods, LightGBM improves over SVM (Top-1 0.5437 vs 0.5036), but both remain substantially below deep transfer-learning performance. Ablations show strong dependence on image resolution for CNNs, limited gains from the tested augmentation setup, and a large optimizer sensitivity for ResNet50 (Adam $\gg$ SGD in this setup).
 \end{abstract}
 
 \section{Introduction}
@@ -23,7 +23,7 @@ Caltech-101 is an important benchmark for multi-class object recognition, and it
 
 In this work, we evaluate Caltech-101 classification under a unified experimental framework using all 102 classes, including \texttt{BACKGROUND\_Google}, with a stratified split protocol (train/val/test = 6400/1372/1372 images, i.e., 70.0\%/15.0\%/15.0\%). We implement a classical baseline (HOG + Linear SVM) and multiple transfer-learning deep models (ResNet50, EfficientNet-B0, and ViT-B/16), report Top-1 accuracy, Top-5 accuracy, Macro-F1, and Weighted-F1, and run ablation studies on image resolution, augmentation policy, and optimizer choice.
 
-The purpose of this report is to provide a rigorous empirical comparison between classical and deep-learning approaches on the same split protocol, identify practical factors that most affect performance, and summarize actionable insights for model selection on medium-scale, class-imbalanced object recognition benchmarks.
+The purpose of this report is to provide a rigorous empirical comparison between classical machine learning models and deep learning models under the same split protocol, and to clearly characterize the performance differences between these two model families on Caltech-101.
 
 \section{Dataset}
 All experiments use Caltech-101 \cite{feifei2004caltech101}, with 9,144 images across 102 classes. We construct data splits with a two-stage stratified procedure over class labels: first, 70\% training and 30\% temporary data; second, the temporary set is split evenly into validation and test sets, yielding 6,400/1,372/1,372 images (70.0\%/15.0\%/15.0\%). This preserves class proportions across splits and avoids sample overlap.
@@ -54,39 +54,36 @@ ViT-B/16 is a transformer-based vision architecture that models global image con
 \subsection{Training Protocol}
 For all deep models, training lasts 12 epochs with a two-stage freeze--unfreeze strategy: the backbone is frozen for the first 2 epochs and then unfrozen for full fine-tuning. ResNet50 and EfficientNet-B0 use batch size 32, initial learning rate $3\times10^{-4}$, and post-unfreeze learning rate $1\times10^{-4}$ at $128\times128$ resolution, whereas ViT-B/16 uses batch size 16, initial learning rate $1\times10^{-4}$, and post-unfreeze learning rate $5\times10^{-5}$ at $224\times224$; in all deep runs, Adam is the default optimizer with weight decay $1\times10^{-4}$.
 
-For the classical models, HOG extraction uses size 128, 9 orientations, 8$\times$8 pixels per cell, and 2$\times$2 cells per block. The linear SVM is trained with \texttt{max\_iter}=1000 and validation tuning over $C$ (configured grid: [0.1]), while the LightGBM model searches over \texttt{num\_leaves} $\in \{31,63\}$, \texttt{learning\_rate} $\in \{0.05,0.1\}$, and \texttt{n\_estimators} $\in \{200,400\}$ with \texttt{subsample}=0.9 and \texttt{colsample\_bytree}=0.9.
+For the classical models, HOG extraction uses size 128, 9 orientations, 8$\times$8 pixels per cell, and 2$\times$2 cells per block. The linear SVM is trained with \texttt{max\_iter}=1000 and validation tuning over $C$ (configured grid: [0.1]). The LightGBM baseline is intentionally configured for fast execution with a single setting (\texttt{num\_leaves}=31, \texttt{learning\_rate}=0.1, \texttt{n\_estimators}=100, \texttt{subsample}=0.8, \texttt{colsample\_bytree}=0.8), and model selection remains based on validation Macro-F1; GPU mode can be requested in the training script, with automatic CPU fallback if GPU acceleration is unavailable in the LightGBM build.
 
 \section{Experiment Setup}
 \subsection{Augmentation}
-Two settings are tested in A2:
-\begin{itemize}
-    \item \textbf{Without augmentation}: deterministic resize pipeline
-    \item \textbf{With augmentation}: random resized crop + horizontal flip + color jitter
-\end{itemize}
+To isolate the effect of data augmentation, we evaluate two training pipelines for deep models while keeping the remaining settings fixed. The first pipeline applies only deterministic resizing to the target input resolution. The second pipeline applies stochastic augmentation during training (random resized crop, horizontal flip, and color jitter), which acts as regularization by increasing appearance variability. For both pipelines, validation and test images are processed with deterministic resizing and normalization to ensure a controlled and comparable evaluation protocol.
 
 \subsection{Optimization}
-Adam is used as the default optimizer. A3 compares Adam vs SGD for ResNet50 under the same image size and augmentation setting.
+Deep models are optimized with cross-entropy loss under a freeze--unfreeze transfer-learning schedule: the pretrained backbone is frozen in early epochs and then unfrozen for end-to-end fine-tuning. Adam is used as the default optimizer in the main comparison runs, with weight decay applied as regularization. To explicitly assess optimizer effects, we also run a controlled comparison in which ResNet50 is trained twice under identical image size and augmentation settings, once with Adam and once with SGD.
 
 \subsection{Model Selection}
-Deep model comparison uses the main runs under \texttt{runs\_server/default\_exp}. Classical baseline is reported from \texttt{classical\_svm} in the same directory for consistency.
+For deep models, checkpoint selection is based on validation Macro-F1, and the best checkpoint is used for final test evaluation. We prefer Macro-F1 over overall accuracy because the class distribution is imbalanced; accuracy can be dominated by frequent classes, whereas Macro-F1 gives equal weight to each class and therefore better reflects balanced recognition quality across all 102 categories.
 
 \subsection{Ablation Protocol}
 \begin{itemize}
-    \item \textbf{A1 (Image Size)}: compare 64 vs 128 (ViT remains effectively at 224 by architecture constraint).
-    \item \textbf{A2 (Augmentation)}: compare without augmentation vs with augmentation at fixed image size.
-    \item \textbf{A3 (Optimizer)}: compare Adam vs SGD (ResNet50).
+    \item \textbf{A1 (Image Resolution):} ResNet50 and EfficientNet-B0 are evaluated at 64 and 128 input resolution, with all other settings fixed. ViT-B/16 remains at 224 due to architecture constraints.
+    \item \textbf{A2 (Augmentation Effect):} each deep model is trained with and without stochastic augmentation at fixed resolution and optimizer settings.
+    \item \textbf{A3 (Optimizer Effect):} ResNet50 is trained with Adam and SGD under matched settings to isolate optimizer impact.
 \end{itemize}
 
 \section{Results}
 \subsection{Overall Performance}
 \begin{table}[H]
 \centering
-\caption{Main test results from \texttt{runs\_server/default\_exp}.}
+\caption{Main test results from selected experiment runs.}
 \begin{tabular}{lcccc}
 \toprule
 Model & Top-1 Acc & Top-5 Acc & Macro-F1 & Weighted-F1 \\
 \midrule
 Classical SVM & 0.5036 & 0.6334 & 0.3043 & 0.4741 \\
+Classical LightGBM & 0.5437 & 0.6968 & 0.3032 & 0.5376 \\
 EfficientNet-B0 & 0.9213 & 0.9869 & 0.8955 & 0.9205 \\
 ResNet50 & 0.9402 & 0.9942 & 0.9183 & 0.9402 \\
 ViT-B/16 & \textbf{0.9461} & 0.9913 & \textbf{0.9272} & \textbf{0.9459} \\
@@ -94,128 +91,158 @@ ViT-B/16 & \textbf{0.9461} & 0.9913 & \textbf{0.9272} & \textbf{0.9459} \\
 \end{tabular}
 \end{table}
 
+Table 1 addresses the central objective of this report: a controlled comparison between classical and transfer-learning approaches under a shared split protocol and evaluation suite. The results show a clear hierarchy in which deep transfer-learning models substantially outperform classical baselines, with ViT-B/16 achieving the highest Top-1 accuracy and Macro-F1. LightGBM improves over linear SVM in Top-1 and Weighted-F1, but this gain is not sufficient to close the large gap to pretrained deep representations, reinforcing the practical motivation for transfer learning on this benchmark.
+
+\begin{table}[H]
+\centering
+\caption{Classical model training outcomes (selected by validation Macro-F1).}
+\begin{tabular}{lcc}
+\toprule
+Model & Hyperparameters & Val Macro-F1 \\
+\midrule
+HOG + Linear SVM & $C=0.1$ & 0.2819 \\
+HOG + Engineered Features + LightGBM & leaves=31, lr=0.1, trees=100 & 0.3198 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table 2 summarizes the classical-model training configuration selected by validation Macro-F1. Under the current fast-baseline setup, LightGBM attains a higher validation Macro-F1 than linear SVM, which is consistent with its stronger non-linear decision capacity and its improved Top-1 test accuracy in Table 1.
+
 \subsection{Per-Class Results}
-Average per-class accuracy across the 102 classes:
+To quantify class-wise behavior, we report per-class accuracy for each class $c$ as
+\[
+\mathrm{Acc}_c = \frac{\#\{\text{correct predictions in class } c\}}{N_c} = \frac{\mathrm{TP}_c}{N_c},
+\]
+where $N_c$ is the number of test samples in class $c$. We summarize these values by their arithmetic mean across classes:
+\[
+\overline{\mathrm{Acc}}_{\mathrm{class}} = \frac{1}{C}\sum_{c=1}^{C}\mathrm{Acc}_c,\quad C=102.
+\]
+This analysis is necessary because the dataset is class-imbalanced; aggregate accuracy can mask poor performance on low-frequency or visually difficult categories.
+
+Average per-class accuracy across the 102 classes is:
 \begin{itemize}
     \item Classical SVM: 0.2893
+    \item Classical LightGBM: 0.3076
     \item EfficientNet-B0: 0.8977
     \item ResNet50: 0.9222
     \item ViT-B/16: 0.9350
 \end{itemize}
 Additionally, 37 classes are predicted perfectly (accuracy = 1.0) by all three deep models.
 
-\begin{table}[H]
-\centering
-\caption{ViT-B/16 hardest classes on test set (lowest per-class accuracy).}
-\begin{tabular}{lcc}
-\toprule
-Class & Accuracy & Test Count \\
-\midrule
-lotus & 0.3000 & 10 \\
-crocodile & 0.5714 & 7 \\
-snoopy & 0.6000 & 5 \\
-wrench & 0.6667 & 6 \\
-BACKGROUND\_Google & 0.7000 & 70 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.48\textwidth}
     \centering
     \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png}
-    \caption{Classical SVM normalized confusion matrix}
+    \caption{HOG + Linear SVM}
 \end{subfigure}
 \hfill
 \begin{subfigure}[b]{0.48\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png}
-    \caption{ViT-B/16 normalized confusion matrix}
+    \includegraphics[width=\textwidth]{runs/baseline_lgbm/20260301_162248/confusion_matrix_normalized.png}
+    \caption{HOG + Engineered Features + LightGBM}
 \end{subfigure}
-\caption{Confusion matrix comparison between classical baseline and best deep model.}
+\caption{Normalized confusion matrices for the two classical models.}
 \end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{runs_server/default_exp/20260227_231334/per_class_accuracy.png}
-\caption{Per-class accuracy distribution for ViT-B/16.}
-\end{figure}
-
-\section{Ablation Study}
-\subsection{A1: Image Size (64 vs 128)}
-\begin{table}[H]
-\centering
-\caption{A1 image-size ablation (Top-1 accuracy).}
-\begin{tabular}{lccc}
-\toprule
-Model & Acc@64 & Acc@128 & $\Delta$(128-64) \\
-\midrule
-ResNet50 & 0.8739 & 0.9402 & +0.0663 \\
-EfficientNet-B0 & 0.8061 & 0.9213 & +0.1152 \\
-ViT-B/16 & 0.9461 & 0.9461 & +0.0000 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{A2: Augmentation (Without vs With)}
-\begin{table}[H]
-\centering
-\caption{A2 augmentation ablation (Top-1 accuracy).}
-\begin{tabular}{lccc}
-\toprule
-Model & Without Aug & With Aug & $\Delta$(With-Without) \\
-\midrule
-ResNet50 & 0.9410 & 0.9402 & -0.0007 \\
-EfficientNet-B0 & 0.9359 & 0.9213 & -0.0146 \\
-ViT-B/16 & 0.9592 & 0.9461 & -0.0131 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{A3: Optimizer (Adam vs SGD on ResNet50)}
-\begin{table}[H]
-\centering
-\caption{A3 optimizer ablation on ResNet50 (Top-1 accuracy).}
-\begin{tabular}{lcc}
-\toprule
-Optimizer & Top-1 Acc & $\Delta$ vs Adam \\
-\midrule
-Adam & 0.9402 & 0.0000 \\
-SGD & 0.8411 & -0.0991 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \begin{figure}[H]
 \centering
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_224031/training_curves.png}
-    \caption{ResNet50}
-\end{subfigure}
-\begin{subfigure}[b]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_224637/training_curves.png}
+    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_224637/confusion_matrix_normalized.png}
     \caption{EfficientNet-B0}
 \end{subfigure}
 \begin{subfigure}[b]{0.32\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_231334/training_curves.png}
+    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_224031/confusion_matrix_normalized.png}
+    \caption{ResNet50}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png}
     \caption{ViT-B/16}
 \end{subfigure}
-\caption{Training curves for main deep-learning runs.}
+\caption{Normalized confusion matrices for the three transfer-learning models.}
 \end{figure}
 
+The confusion matrices are consistent with the metric-level findings. Both classical models exhibit broader off-diagonal spread, indicating frequent cross-class confusion and weak discrimination for many categories; LightGBM slightly sharpens the diagonal relative to SVM, matching its higher Top-1 accuracy. In contrast, all deep models produce strongly diagonal matrices, reflecting robust class separation. Among them, ViT-B/16 and ResNet50 show the cleanest diagonal concentration, while EfficientNet-B0 remains strong but with relatively more residual confusion on hard minority classes.
+
+\section{Ablation Study}
+We conduct a targeted ablation study to isolate the contribution of three implementation factors in the deep-learning pipeline: input resolution, augmentation policy, and optimizer choice. Each ablation changes one factor while holding the others fixed, so that performance differences can be interpreted causally rather than as the result of multiple simultaneous configuration changes.
+
+\subsection{A1: Image Size (64 vs 128)}
+\begin{table}[H]
+\centering
+\caption{A1 image-size ablation (Top-1 accuracy and Macro-F1).}
+\begin{tabular}{lcccccc}
+\toprule
+Model & Top-1@64 & Top-1@128 & $\Delta$Top-1 & Macro-F1@64 & Macro-F1@128 & $\Delta$Macro-F1 \\
+\midrule
+ResNet50 & 0.8739 & 0.9402 & +0.0663 & 0.8318 & 0.9183 & +0.0864 \\
+EfficientNet-B0 & 0.8061 & 0.9213 & +0.1152 & 0.7427 & 0.8955 & +0.1528 \\
+ViT-B/16 & 0.9461 & 0.9461 & +0.0000 & 0.9272 & 0.9272 & +0.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Increasing resolution from 64 to 128 substantially improves both Top-1 and Macro-F1 for CNN backbones, with the largest gain on EfficientNet-B0. The larger Macro-F1 gains (especially +0.1528 for EfficientNet-B0) indicate that higher resolution benefits not only overall accuracy but also balanced performance across classes. ViT-B/16 remains unchanged because its implementation is constrained to 224 input resolution in both settings.
+
+\subsection{A2: Augmentation (Without vs With)}
+\begin{table}[H]
+\centering
+\caption{A2 augmentation ablation (Top-1 accuracy and Macro-F1).}
+\begin{tabular}{lcccccc}
+\toprule
+Model & Top-1 WO & Top-1 W & $\Delta$Top-1 & Macro-F1 WO & Macro-F1 W & $\Delta$Macro-F1 \\
+\midrule
+ResNet50 & 0.9410 & 0.9402 & -0.0007 & 0.9196 & 0.9183 & -0.0014 \\
+EfficientNet-B0 & 0.9359 & 0.9213 & -0.0146 & 0.9065 & 0.8955 & -0.0110 \\
+ViT-B/16 & 0.9592 & 0.9461 & -0.0131 & 0.9400 & 0.9272 & -0.0128 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\noindent\textit{Note:} WO = without augmentation, W = with augmentation.
+In this configuration, stochastic augmentation degrades both Top-1 and Macro-F1 for all three deep models. The consistent negative deltas suggest that the selected augmentation strength/type is not well matched to this training budget and dataset regime, and may require retuning rather than being assumed beneficial by default.
+
+\subsection{A3: Optimizer (Adam vs SGD on ResNet50)}
+\begin{table}[H]
+\centering
+\caption{A3 optimizer ablation on ResNet50 (Top-1 accuracy and Macro-F1).}
+\begin{tabular}{lcccc}
+\toprule
+Optimizer & Top-1 Acc & $\Delta$Top-1 vs Adam & Macro-F1 & $\Delta$Macro-F1 vs Adam \\
+\midrule
+Adam & 0.9402 & 0.0000 & 0.9183 & 0.0000 \\
+SGD & 0.8411 & -0.0991 & 0.7472 & -0.1710 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Adam clearly outperforms SGD under the current hyperparameter settings, with a large Top-1 gap (-0.0991) and an even larger Macro-F1 gap (-0.1710) for SGD. The larger Macro-F1 drop implies that SGD in this setup disproportionately harms class-balanced performance, not only average accuracy.
+
 \section{Observation and Discussion}
-\begin{itemize}
-    \item \textbf{Deep models strongly outperform classical baseline.} The gap between ViT (0.9461) and SVM (0.5036) is large in both Top-1 and Macro-F1, showing the benefit of pretrained deep representations for this 102-class setting.
-    \item \textbf{ViT is the best model overall.} ViT achieves the highest Top-1 and Macro-F1, and the best mean per-class accuracy.
-    \item \textbf{Image resolution matters for CNNs.} Increasing from 64 to 128 yields notable gains for ResNet50 and EfficientNet-B0, especially EfficientNet (+0.1152).
-    \item \textbf{Current augmentation policy is not beneficial.} In this setup, adding augmentation slightly decreases Top-1 across all three deep models, suggesting that augmentation strength/type should be retuned.
-    \item \textbf{Optimizer choice is critical.} For ResNet50 under the tested hyperparameters, Adam clearly outperforms SGD by nearly 10 percentage points Top-1.
-    \item \textbf{Per-class variance remains visible.} Even with strong overall performance, classes such as \texttt{lotus}, \texttt{crocodile}, and \texttt{snoopy} remain difficult, likely due to limited samples and/or higher intra-class variability.
-\end{itemize}
+\subsection{Deep Models vs Classical Baselines}
+Deep transfer-learning models substantially outperform the classical baselines, with ViT-B/16 achieving the best overall performance (Top-1 0.9461, Macro-F1 0.9272). This gap indicates that pretrained deep representations are the most reliable option for this 102-class setting, especially when balanced class-level performance is a priority.
+
+\subsection{SVM vs LightGBM Baseline Behavior}
+LightGBM improves Top-1 and Weighted-F1 over linear SVM, indicating better non-linear fitting capacity for global decision boundaries. However, its Macro-F1 remains low and close to SVM, implying that classical pipelines still struggle to generalize across rare and difficult categories.
+
+\subsection{Implications from Resolution and Optimizer Ablations}
+The ablations show that image resolution and optimizer selection are high-impact controls in this pipeline. In practical terms, moving from 64 to 128 strongly improves CNN performance, and Adam is clearly more suitable than SGD under the tested ResNet50 hyperparameters.
+
+\subsection{Implications from Augmentation Ablation}
+The tested augmentation policy yields consistent metric decreases across all three deep models. This suggests that augmentation should be treated as a tunable design variable rather than a default improvement, and its strength/composition should be re-optimized for this dataset and training budget.
+
+\subsection{Failure Modes}
+A consistent failure pattern is concentrated on classes with small test support and/or high visual ambiguity. For example, classes such as \texttt{lotus}, \texttt{crocodile}, and \texttt{snoopy} remain among the hardest even for strong deep models, while several low-support classes reach near-zero accuracy under classical models. The confusion matrices also indicate that heterogeneous categories (including \texttt{BACKGROUND\_Google}) are more prone to cross-class confusion, which suggests sensitivity to cluttered scenes, intra-class variability, and limited sample diversity in minority classes.
+
+\subsection{Limitations}
+This study is limited by a single split protocol and a fixed seed in the reported main runs, so variance across random initializations and split realizations is not fully characterized. Hyperparameter exploration is also intentionally constrained for some settings (notably the fast LightGBM baseline), which prioritizes runtime over peak performance. In addition, ViT-B/16 input size is architecture-constrained in this codebase, and augmentation exploration is restricted to one policy family; broader augmentation and optimization sweeps may yield different conclusions. Finally, results are reported on a single dataset benchmark, so cross-dataset generalization is not evaluated.
+
+\section{Reproducibility}
+To support reproducibility, the full source code, training scripts, configuration files, and report artifacts are available in the project repository:
+\begin{center}
+\url{https://github.com/G6KlayWang/Caltech_101}
+\end{center}
+Users can reproduce the main experiments by following the documented setup and running the provided shell entrypoints for data preparation, model training, and evaluation.
 
 \begin{thebibliography}{9}
 
@@ -250,5 +277,195 @@ A. Dosovitskiy, et al.
 \newblock In \emph{International Conference on Learning Representations (ICLR)}, 2021.
 
 \end{thebibliography}
+
+\appendix
+\section{Appendix}
+\subsection{Training Curves for Deep Models}
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_224031/training_curves.png}
+    \caption{ResNet50}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_224637/training_curves.png}
+    \caption{EfficientNet-B0}
+\end{subfigure}
+\begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{runs_server/default_exp/20260227_231334/training_curves.png}
+    \caption{ViT-B/16}
+\end{subfigure}
+\caption{Training curves for the three main deep-learning runs.}
+\end{figure}
+
+\subsection{Top-5 and Bottom-5 Per-Class Accuracy}
+
+\subsubsection{HOG + Linear SVM}
+\begin{table}[H]
+\centering
+\caption{Bottom-5 classes for HOG + Linear SVM.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+binocular & 0.0000 & 5 \\
+inline\_skate & 0.0000 & 5 \\
+metronome & 0.0000 & 5 \\
+platypus & 0.0000 & 5 \\
+strawberry & 0.0000 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Top-5 classes for HOG + Linear SVM.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+Faces\_easy & 1.0000 & 66 \\
+car\_side & 1.0000 & 18 \\
+Motorbikes & 0.9917 & 120 \\
+airplanes & 0.9750 & 120 \\
+Faces & 0.9545 & 66 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{HOG + Engineered Features + LightGBM}
+\begin{table}[H]
+\centering
+\caption{Bottom-5 classes for HOG + Engineered Features + LightGBM.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+binocular & 0.0000 & 5 \\
+garfield & 0.0000 & 5 \\
+gerenuk & 0.0000 & 5 \\
+platypus & 0.0000 & 5 \\
+wild\_cat & 0.0000 & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Top-5 classes for HOG + Engineered Features + LightGBM.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+Motorbikes & 1.0000 & 120 \\
+airplanes & 1.0000 & 120 \\
+Faces & 1.0000 & 66 \\
+Leopards & 1.0000 & 30 \\
+Faces\_easy & 0.9697 & 66 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{EfficientNet-B0}
+\begin{table}[H]
+\centering
+\caption{Bottom-5 classes for EfficientNet-B0.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+octopus & 0.4000 & 5 \\
+water\_lilly & 0.5000 & 6 \\
+lotus & 0.5000 & 10 \\
+chair & 0.5556 & 9 \\
+cannon & 0.5714 & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Top-5 classes for EfficientNet-B0.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+Motorbikes & 1.0000 & 120 \\
+Faces & 1.0000 & 66 \\
+Leopards & 1.0000 & 30 \\
+bonsai & 1.0000 & 19 \\
+car\_side & 1.0000 & 18 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{ResNet50}
+\begin{table}[H]
+\centering
+\caption{Bottom-5 classes for ResNet50.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+water\_lilly & 0.3333 & 6 \\
+crocodile & 0.5714 & 7 \\
+lobster & 0.6667 & 6 \\
+lotus & 0.7000 & 10 \\
+cannon & 0.7143 & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Top-5 classes for ResNet50.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+Motorbikes & 1.0000 & 120 \\
+Faces & 1.0000 & 66 \\
+Faces\_easy & 1.0000 & 66 \\
+Leopards & 1.0000 & 30 \\
+car\_side & 1.0000 & 18 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{ViT-B/16}
+\begin{table}[H]
+\centering
+\caption{Bottom-5 classes for ViT-B/16.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+lotus & 0.3000 & 10 \\
+crocodile & 0.5714 & 7 \\
+snoopy & 0.6000 & 5 \\
+wrench & 0.6667 & 6 \\
+BACKGROUND\_Google & 0.7000 & 70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Top-5 classes for ViT-B/16.}
+\begin{tabular}{lcc}
+\toprule
+Class & Accuracy & Test Count \\
+\midrule
+Motorbikes & 1.0000 & 120 \\
+Faces & 1.0000 & 66 \\
+Faces\_easy & 1.0000 & 66 \\
+Leopards & 1.0000 & 30 \\
+car\_side & 1.0000 & 18 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \end{document}

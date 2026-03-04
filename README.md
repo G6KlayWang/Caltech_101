@@ -44,6 +44,7 @@ bash scripts/00_prepare_data.sh
 bash scripts/01_train_eval.sh --model classical_svm --exp_name baseline_classical
 bash scripts/01_train_eval.sh --model resnet50 --img_size 128 --aug 1 --optimizer adam --exp_name dl_baseline
 bash scripts/02_run_ablations.sh
+bash scripts/04_run_feature_ablation.sh
 ```
 
 ## CLI Entrypoints

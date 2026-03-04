@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  1 MAR 2026 14:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  2 MAR 2026 22:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -459,96 +459,137 @@ each fam-ily. For the clas-si-cal pipeline,
 
 [3{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }]
-<runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png, id=13
-3, 1156.32pt x 1011.78pt>
+
+[4]
+<runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png, id=20
+2, 1156.32pt x 1011.78pt>
 File: runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png G
 raphic file (type png)
 <use runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png>
 Package pdftex.def Info: runs_server/default_exp/20260227_142110/confusion_matr
-ix_normalized.png  used on input line 127.
+ix_normalized.png  used on input line 136.
 (pdftex.def)             Requested size: 217.42265pt x 190.23318pt.
-<runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png, id=13
+<runs/baseline_lgbm/20260301_162248/confusion_matrix_normalized.png, id=204, 11
+56.32pt x 1011.78pt>
+File: runs/baseline_lgbm/20260301_162248/confusion_matrix_normalized.png Graphi
+c file (type png)
+<use runs/baseline_lgbm/20260301_162248/confusion_matrix_normalized.png>
+Package pdftex.def Info: runs/baseline_lgbm/20260301_162248/confusion_matrix_no
+rmalized.png  used on input line 142.
+(pdftex.def)             Requested size: 217.42265pt x 190.23318pt.
+<runs_server/default_exp/20260227_224637/confusion_matrix_normalized.png, id=20
 5, 1156.32pt x 1011.78pt>
+File: runs_server/default_exp/20260227_224637/confusion_matrix_normalized.png G
+raphic file (type png)
+<use runs_server/default_exp/20260227_224637/confusion_matrix_normalized.png>
+Package pdftex.def Info: runs_server/default_exp/20260227_224637/confusion_matr
+ix_normalized.png  used on input line 152.
+(pdftex.def)             Requested size: 144.95303pt x 126.82727pt.
+<runs_server/default_exp/20260227_224031/confusion_matrix_normalized.png, id=20
+6, 1156.32pt x 1011.78pt>
+File: runs_server/default_exp/20260227_224031/confusion_matrix_normalized.png G
+raphic file (type png)
+<use runs_server/default_exp/20260227_224031/confusion_matrix_normalized.png>
+Package pdftex.def Info: runs_server/default_exp/20260227_224031/confusion_matr
+ix_normalized.png  used on input line 157.
+(pdftex.def)             Requested size: 144.95303pt x 126.82727pt.
+<runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png, id=20
+7, 1156.32pt x 1011.78pt>
 File: runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png G
 raphic file (type png)
 <use runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png>
 Package pdftex.def Info: runs_server/default_exp/20260227_231334/confusion_matr
-ix_normalized.png  used on input line 133.
-(pdftex.def)             Requested size: 217.42265pt x 190.23318pt.
-<runs_server/default_exp/20260227_231334/per_class_accuracy.png, id=136, 1156.3
-2pt x 722.7pt>
-File: runs_server/default_exp/20260227_231334/per_class_accuracy.png Graphic fi
-le (type png)
-<use runs_server/default_exp/20260227_231334/per_class_accuracy.png>
-Package pdftex.def Info: runs_server/default_exp/20260227_231334/per_class_accu
-racy.png  used on input line 141.
-(pdftex.def)             Requested size: 317.07614pt x 198.16417pt.
+ix_normalized.png  used on input line 162.
+(pdftex.def)             Requested size: 144.95303pt x 126.82727pt.
 
 
-[4 <./runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png> 
-<./runs_server/default_exp/20260227_231334/confusion_matrix_normalized.png>]
-<runs_server/default_exp/20260227_224031/training_curves.png, id=146, 867.24pt 
+[5 <./runs_server/default_exp/20260227_142110/confusion_matrix_normalized.png> 
+<./runs/baseline_lgbm/20260301_162248/confusion_matrix_normalized.png> <./runs_
+server/default_exp/20260227_224637/confusion_matrix_normalized.png> <./runs_ser
+ver/default_exp/20260227_224031/confusion_matrix_normalized.png> <./runs_server
+/default_exp/20260227_231334/confusion_matrix_normalized.png>]
+Overfull \hbox (36.12189pt too wide) in paragraph at lines 177--186
+ [][] 
+ []
+
+
+Overfull \hbox (21.21756pt too wide) in paragraph at lines 193--202
+ [][] 
+ []
+
+
+
+[6]
+
+[7]
+<runs_server/default_exp/20260227_224031/training_curves.png, id=233, 867.24pt 
 x 361.35pt>
 File: runs_server/default_exp/20260227_224031/training_curves.png Graphic file 
 (type png)
 <use runs_server/default_exp/20260227_224031/training_curves.png>
 Package pdftex.def Info: runs_server/default_exp/20260227_224031/training_curve
-s.png  used on input line 194.
+s.png  used on input line 288.
 (pdftex.def)             Requested size: 144.95303pt x 60.39209pt.
-<runs_server/default_exp/20260227_224637/training_curves.png, id=147, 867.24pt 
+<runs_server/default_exp/20260227_224637/training_curves.png, id=234, 867.24pt 
 x 361.35pt>
 File: runs_server/default_exp/20260227_224637/training_curves.png Graphic file 
 (type png)
 <use runs_server/default_exp/20260227_224637/training_curves.png>
 Package pdftex.def Info: runs_server/default_exp/20260227_224637/training_curve
-s.png  used on input line 199.
+s.png  used on input line 293.
 (pdftex.def)             Requested size: 144.95303pt x 60.39209pt.
-<runs_server/default_exp/20260227_231334/training_curves.png, id=148, 867.24pt 
+<runs_server/default_exp/20260227_231334/training_curves.png, id=235, 867.24pt 
 x 361.35pt>
 File: runs_server/default_exp/20260227_231334/training_curves.png Graphic file 
 (type png)
 <use runs_server/default_exp/20260227_231334/training_curves.png>
 Package pdftex.def Info: runs_server/default_exp/20260227_231334/training_curve
-s.png  used on input line 204.
+s.png  used on input line 298.
 (pdftex.def)             Requested size: 144.95303pt x 60.39209pt.
 
 
-[5 <./runs_server/default_exp/20260227_231334/per_class_accuracy.png>]
-
-[6 <./runs_server/default_exp/20260227_224031/training_curves.png> <./runs_serv
+[8 <./runs_server/default_exp/20260227_224031/training_curves.png> <./runs_serv
 er/default_exp/20260227_224637/training_curves.png> <./runs_server/default_exp/
-20260227_231334/training_curves.png>] (reports/runs_server_report.aux)
+20260227_231334/training_curves.png>]
+
+[9]
+
+[10]
+
+[11] (reports/runs_server_report.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `runs_server_report.out' has not changed.
-(rerunfilecheck)             Checksum: 03998521CBBA257333DE6E99885E540D;3422.
+(rerunfilecheck)             Checksum: FD1E167400A7D48CDA86CD874DD93CC7;6196.
  ) 
 Here is how much of TeX's memory you used:
- 14664 strings out of 473190
- 297709 string characters out of 5715801
- 668712 words of memory out of 5000000
- 37749 multiletter control sequences out of 15000+600000
+ 14723 strings out of 473190
+ 299501 string characters out of 5715801
+ 668714 words of memory out of 5000000
+ 37778 multiletter control sequences out of 15000+600000
  565339 words of font info for 58 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,9n,80p,1064b,1021s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,9n,80p,1096b,1091s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
-sr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
-/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
-ocal/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/loca
-l/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local
-/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/t
-exlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/te
-xlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/tex
-live/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on reports/runs_server_report.pdf (6 pages, 866753 bytes).
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
+usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></us
+r/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/lo
+cal/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/loca
+l/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/t
+exlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texl
+ive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texli
+ve/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texliv
+e/2025/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on reports/runs_server_report.pdf (11 pages, 1214896 bytes).
 PDF statistics:
- 233 PDF objects out of 1000 (max. 8388607)
- 187 compressed objects within 2 object streams
- 45 named destinations out of 1000 (max. 500000)
- 215 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 347 PDF objects out of 1000 (max. 8388607)
+ 287 compressed objects within 3 object streams
+ 75 named destinations out of 1000 (max. 500000)
+ 345 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -26,24 +26,49 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Ablation Protocol}{3}{subsection.4.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Results}{4}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Overall Performance}{4}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Main test results from \texttt  {runs\_server/default\_exp}.}}{4}{table.caption.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Main test results from selected experiment runs.}}{4}{table.caption.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Classical model training outcomes (selected by validation Macro-F1).}}{4}{table.caption.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Per-Class Results}{4}{subsection.5.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces ViT-B/16 hardest classes on test set (lowest per-class accuracy).}}{4}{table.caption.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Confusion matrix comparison between classical baseline and best deep model.}}{4}{figure.caption.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Per-class accuracy distribution for ViT-B/16.}}{5}{figure.caption.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Ablation Study}{5}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}A1: Image Size (64 vs 128)}{5}{subsection.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces A1 image-size ablation (Top-1 accuracy).}}{5}{table.caption.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}A2: Augmentation (Without vs With)}{5}{subsection.6.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces A2 augmentation ablation (Top-1 accuracy).}}{5}{table.caption.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}A3: Optimizer (Adam vs SGD on ResNet50)}{5}{subsection.6.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces A3 optimizer ablation on ResNet50 (Top-1 accuracy).}}{5}{table.caption.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Normalized confusion matrices for the two classical models.}}{5}{figure.caption.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Normalized confusion matrices for the three transfer-learning models.}}{5}{figure.caption.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Ablation Study}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}A1: Image Size (64 vs 128)}{6}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces A1 image-size ablation (Top-1 accuracy and Macro-F1).}}{6}{table.caption.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}A2: Augmentation (Without vs With)}{6}{subsection.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces A2 augmentation ablation (Top-1 accuracy and Macro-F1).}}{6}{table.caption.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}A3: Optimizer (Adam vs SGD on ResNet50)}{6}{subsection.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces A3 optimizer ablation on ResNet50 (Top-1 accuracy and Macro-F1).}}{6}{table.caption.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Observation and Discussion}{7}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Deep Models vs Classical Baselines}{7}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}SVM vs LightGBM Baseline Behavior}{7}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Implications from Resolution and Optimizer Ablations}{7}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Implications from Augmentation Ablation}{7}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Failure Modes}{7}{subsection.7.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Limitations}{7}{subsection.7.6}\protected@file@percent }
 \bibcite{feifei2004caltech101}{1}
 \bibcite{dalal2005hog}{2}
 \bibcite{cortes1995svm}{3}
 \bibcite{he2016resnet}{4}
 \bibcite{tan2019efficientnet}{5}
 \bibcite{dosovitskiy2021vit}{6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Training curves for main deep-learning runs.}}{6}{figure.caption.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Observation and Discussion}{6}{section.7}\protected@file@percent }
-\gdef \@abspage@last{6}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Reproducibility}{8}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Appendix}{8}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Training Curves for Deep Models}{8}{subsection.A.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Training curves for the three main deep-learning runs.}}{8}{figure.caption.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Top-5 and Bottom-5 Per-Class Accuracy}{9}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.2.1}HOG + Linear SVM}{9}{subsubsection.A.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Bottom-5 classes for HOG + Linear SVM.}}{9}{table.caption.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Top-5 classes for HOG + Linear SVM.}}{9}{table.caption.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.2.2}HOG + Engineered Features + LightGBM}{9}{subsubsection.A.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Bottom-5 classes for HOG + Engineered Features + LightGBM.}}{9}{table.caption.12}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Top-5 classes for HOG + Engineered Features + LightGBM.}}{9}{table.caption.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.2.3}EfficientNet-B0}{10}{subsubsection.A.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Bottom-5 classes for EfficientNet-B0.}}{10}{table.caption.14}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Top-5 classes for EfficientNet-B0.}}{10}{table.caption.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.2.4}ResNet50}{10}{subsubsection.A.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Bottom-5 classes for ResNet50.}}{10}{table.caption.16}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Top-5 classes for ResNet50.}}{10}{table.caption.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {A.2.5}ViT-B/16}{11}{subsubsection.A.2.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Bottom-5 classes for ViT-B/16.}}{11}{table.caption.18}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Top-5 classes for ViT-B/16.}}{11}{table.caption.19}\protected@file@percent }
+\gdef \@abspage@last{11}
